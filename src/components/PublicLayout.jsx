@@ -23,7 +23,7 @@ export default function PublicLayout() {
   return (
     <SmoothScroll enabled={settings.theme.smoothScroll}>
       <ScrollRestore />
-      {!loading && <Preloader name={settings.identity.name} enabled={settings.theme.preloader && loc.pathname === '/'} />}
+      {!loading && <Preloader enabled={settings.theme.preloader && loc.pathname === '/'} />}
       <Nav />
       <AnimatePresence mode="wait" initial={false}>
         <motion.main key={loc.pathname} variants={pageVariants} initial="initial" animate="enter" exit="exit">

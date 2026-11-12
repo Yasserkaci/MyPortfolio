@@ -30,10 +30,12 @@ function Hero({ s }) {
 
   const status = identity.role || (identity.showAvailability && identity.availability)
 
+  const withImage = hero.showImage && hero.imageUrl
+
   return (
-    <section className="hero" ref={ref} id="top">
+    <section className={`hero ${withImage ? '' : 'no-image'}`} ref={ref} id="top">
       <div className="container">
-        <div className="hero-grid">
+        <div className={`hero-grid ${withImage ? '' : 'single'}`}>
           <motion.div className="hero-copy" style={reduce ? undefined : { y: copyY, opacity: fade }}>
             {status && (
               <motion.div
@@ -44,10 +46,10 @@ function Hero({ s }) {
               >
                 {identity.role && <b>{identity.role}</b>}
                 {identity.showAvailability && identity.availability && (
-                  <>
+                  <span className="hero-avail">
                     <i aria-hidden="true" />
                     {identity.availability}
-                  </>
+                  </span>
                 )}
               </motion.div>
             )}
@@ -90,7 +92,7 @@ function Hero({ s }) {
             </motion.div>
           </motion.div>
 
-          {hero.showImage && hero.imageUrl && (
+          {withImage && (
             <motion.div
               className="hero-visual"
               initial={reduce ? false : { clipPath: 'inset(100% 0 0 0)' }}

@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, GithubLogo } from '@phosphor-icons
 import { fetchProject, fetchProjects } from '../../lib/data'
 import { Reveal, SplitWords, ImageReveal } from '../../components/motion'
 import NotFound from './NotFound'
+import { coverProps } from '../../components/ProjectCard'
 
 DOMPurify.addHook('afterSanitizeAttributes', (node) => {
   if (node.tagName === 'A') {
@@ -57,6 +58,7 @@ export default function Project() {
       </div>
     )
 
+  const cover = coverProps(p)
   const facts = [
     ['Year', p.year],
     ['Role', p.role],
@@ -95,12 +97,13 @@ export default function Project() {
 
         {p.cover_url && (
           <motion.div
-            className="project-cover"
+            className={`project-cover ${cover.className}`}
+            style={cover.style}
             initial={reduce ? false : { clipPath: 'inset(0 0 100% 0)', scale: 1.04 }}
             animate={{ clipPath: 'inset(0 0 0% 0)', scale: 1 }}
             transition={{ duration: 1.2, delay: 0.25, ease: [0.76, 0, 0.24, 1] }}
           >
-            <img src={p.cover_url} alt={p.title} fetchPriority="high" />
+            <img src={p.cover_url} alt={p.title} fetchPriority="high" style={{ objectFit: cover.fit, objectPosition: cover.position }} />
           </motion.div>
         )}
       </div>

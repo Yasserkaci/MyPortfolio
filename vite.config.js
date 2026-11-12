@@ -3,6 +3,30 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [react()],
+  // Pre-bundle everything up front so the dev server never re-optimizes mid-session
+  // (which otherwise aborts in-flight page loads with "outdated optimize dep").
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom/client',
+      'react-router-dom',
+      '@supabase/supabase-js',
+      'motion/react',
+      'lenis',
+      'dompurify',
+      'marked',
+      '@phosphor-icons/react',
+      '@tiptap/react',
+      '@tiptap/starter-kit',
+      '@tiptap/extension-image',
+      '@tiptap/extension-link',
+      '@tiptap/extension-placeholder',
+      '@tiptap/extension-youtube',
+      '@dnd-kit/core',
+      '@dnd-kit/sortable',
+      '@dnd-kit/utilities',
+    ],
+  },
   build: {
     rollupOptions: {
       output: {

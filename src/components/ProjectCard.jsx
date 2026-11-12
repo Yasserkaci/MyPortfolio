@@ -4,6 +4,18 @@ import { motion, useMotionValue, useSpring, useReducedMotion } from 'motion/reac
 import { ArrowUpRight } from '@phosphor-icons/react'
 import { Reveal, ImageReveal } from './motion'
 
+/** Maps a project's cover_fit to how the image sits inside its media box. */
+export function coverProps(p) {
+  const fit = p.cover_fit || 'cover'
+  const accent = p.accent || 'var(--accent)'
+  return {
+    className: `fit-${fit}`,
+    style: fit === 'cover' ? undefined : { '--card-accent': accent },
+    fit: fit === 'contain' ? 'contain' : 'cover',
+    position: fit === 'top' || fit === 'frame' ? 'top center' : 'center',
+  }
+}
+
 export default function ProjectCard({ p, index = 0 }) {
   const ref = useRef(null)
   const reduce = useReducedMotion()
@@ -11,6 +23,7 @@ export default function ProjectCard({ p, index = 0 }) {
   const my = useMotionValue(0)
   const sx = useSpring(mx, { stiffness: 260, damping: 24, mass: 0.5 })
   const sy = useSpring(my, { stiffness: 260, damping: 24, mass: 0.5 })
+  const cover = coverProps(p)
 
   const onMove = (e) => {
     if (!ref.current || reduce) return
@@ -21,9 +34,16 @@ export default function ProjectCard({ p, index = 0 }) {
 
   return (
     <Reveal as="article" className="work-card" delay={(index % 2) * 0.08}>
-      <Link ref={ref} to={`/work/${p.slug}`} className="work-media" aria-label={`Open ${p.title}`} onPointerMove={onMove}>
+      <Link
+        ref={ref}
+        to={`/work/${p.slug}`}
+        className={`work-media ${cover.className}`}
+        style={cover.style}
+        aria-label={`Open ${p.title}`}
+        onPointerMove={onMove}
+      >
         {p.cover_url ? (
-          <ImageReveal src={p.cover_url} alt={p.title} eager={index < 2} />
+          <ImageReveal src={p.cover_url} alt={p.title} eager={index < 2} fit={cover.fit} position={cover.position} />
         ) : (
           <div className="skeleton" style={{ position: 'absolute', inset: 0 }} />
         )}

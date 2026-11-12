@@ -3,7 +3,14 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Plus, X, ArrowSquareOut } from '@phosphor-icons/react'
 import { supabase, uploadMedia } from '../../lib/supabase'
 import { slugify } from '../../lib/utils'
-import { Field, Input, Textarea, Toggle, TagInput, ImageField, useToast } from '../../components/admin/ui'
+import { Field, Input, Textarea, Toggle, TagInput, ImageField, Select, ColorField, useToast } from '../../components/admin/ui'
+
+const FIT_HINTS = {
+  cover: 'The image fills the card and is cropped to fit. Best for photos.',
+  top: 'Fills the width and keeps the top of the page visible. Best for full-page website screenshots.',
+  frame: 'Shows the screenshot inset in a tinted frame, like a browser window peeking in.',
+  contain: 'Shows the whole image with space around it. Best for logos or small images.',
+}
 import RichEditor from '../../components/admin/RichEditor'
 
 const EMPTY = {
@@ -13,6 +20,8 @@ const EMPTY = {
   summary: '',
   content_html: '',
   cover_url: '',
+  cover_fit: 'cover',
+  accent: '',
   gallery: [],
   tags: [],
   stack: [],
@@ -194,6 +203,29 @@ export default function ProjectEditor() {
           <div className="panel">
             <h2>Cover image</h2>
             <ImageField value={p.cover_url} onChange={set('cover_url')} folder="covers" label="cover" />
+            <div className="form" style={{ marginTop: 16 }}>
+              <Field label="Cover display" htmlFor="fit" hint={FIT_HINTS[p.cover_fit] || FIT_HINTS.cover}>
+                <Select
+                  id="fit"
+                  value={p.cover_fit}
+                  onChange={set('cover_fit')}
+                  options={[
+                    { value: 'cover', label: 'Fill and crop (photos)' },
+                    { value: 'top', label: 'Fill width, keep the top (website screenshots)' },
+                    { value: 'frame', label: 'Framed screenshot on a tinted background' },
+                    { value: 'contain', label: 'Fit whole image (logos, small images)' },
+                  ]}
+                />
+              </Field>
+              {p.cover_fit !== 'cover' && (
+                <Field label="Background tint" hint="Used behind framed and fitted covers. Leave empty for the site accent.">
+                  <ColorField value={p.accent || ''} onChange={set('accent')} />
+                </Field>
+              )}
+              <p className="hint muted" style={{ fontSize: '0.82rem' }}>
+                For best results upload a real screenshot at least 1600px wide. Dragging an image out of a browser tab usually grabs a tiny logo, not the page.
+              </p>
+            </div>
           </div>
 
           <div className="panel">

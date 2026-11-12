@@ -29,7 +29,7 @@ export const DEFAULT_SETTINGS = {
     secondaryCta: { label: '', href: '#contact' },
     imageUrl: 'https://picsum.photos/seed/yaser-hero-studio/1200/1500',
     imageAlt: 'Workspace',
-    showImage: true,
+    showImage: false,
   },
   marquee: {
     enabled: true,

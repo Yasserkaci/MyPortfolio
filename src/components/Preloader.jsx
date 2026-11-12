@@ -4,8 +4,11 @@ import { EASE } from '../lib/utils'
 
 const KEY = 'yk-preloaded'
 
-/** Entry moment: the name is revealed letter by letter, then the panel lifts. Shown once per session. */
-export default function Preloader({ name, enabled }) {
+/**
+ * Entry moment: a single accent line draws across a blank panel, then the panel lifts
+ * like a sheet and the hero headline staggers in underneath. Once per session, 1.2s total.
+ */
+export default function Preloader({ enabled }) {
   const reduce = useReducedMotion()
   const [show, setShow] = useState(() => enabled && !reduce && !sessionStorage.getItem(KEY))
 
@@ -15,39 +18,24 @@ export default function Preloader({ name, enabled }) {
     const t = setTimeout(() => {
       setShow(false)
       sessionStorage.setItem(KEY, '1')
-    }, 1900)
+    }, 1150)
     return () => {
       clearTimeout(t)
       document.documentElement.style.overflow = ''
     }
   }, [show])
 
-  const letters = Array.from(name || '')
-
   return (
     <AnimatePresence>
       {show && (
         <motion.div
           className="preloader"
-          initial={{ y: 0 }}
-          exit={{ y: '-100%', transition: { duration: 0.9, ease: [0.76, 0, 0.24, 1] } }}
+          initial={{ y: 0, borderRadius: '0 0 0 0' }}
+          exit={{ y: '-100%', borderRadius: '0 0 50% 50%', transition: { duration: 0.85, ease: [0.76, 0, 0.24, 1] } }}
           aria-hidden="true"
         >
-          <div className="preloader-name">
-            {letters.map((ch, i) => (
-              <motion.span
-                key={i}
-                initial={{ y: '110%' }}
-                animate={{ y: 0 }}
-                transition={{ duration: 0.9, delay: 0.1 + i * 0.035, ease: EASE }}
-                style={{ whiteSpace: 'pre' }}
-              >
-                {ch}
-              </motion.span>
-            ))}
-          </div>
-          <div className="preloader-bar">
-            <motion.i initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.5, ease: EASE }} />
+          <div className="preloader-line">
+            <motion.i initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1, ease: EASE }} />
           </div>
         </motion.div>
       )}

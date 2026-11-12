@@ -25,8 +25,12 @@ import {
   CodeBlock,
   TextT,
 } from '@phosphor-icons/react'
+import { marked } from 'marked'
 import { uploadMedia } from '../../lib/supabase'
 import { useToast } from './ui'
+
+/** Lines starting with #, -, *, >, 1. or containing **bold** / [link](url) read as Markdown. */
+const MARKDOWN_HINT = /(^|\n)\s*(#{1,6}\s|[-*]\s|>\s|\d+\.\s)|\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\)/
 
 function B({ on, active, title, children }) {
   return (
@@ -38,6 +42,7 @@ function B({ on, active, title, children }) {
 
 export default function RichEditor({ value, onChange, placeholder = 'Tell the story of this project…' }) {
   const fileRef = useRef(null)
+  const editorRef = useRef(null)
   const toast = useToast()
 
   const editor = useEditor({
@@ -67,10 +72,21 @@ export default function RichEditor({ value, onChange, placeholder = 'Tell the st
           insertImage(file)
           return true
         }
+        // Plain-text paste that looks like Markdown: convert it to real headings, lists and quotes.
+        const types = [...(event.clipboardData?.types || [])]
+        const text = event.clipboardData?.getData('text/plain') || ''
+        if (!types.includes('text/html') && MARKDOWN_HINT.test(text)) {
+          event.preventDefault()
+          const html = marked.parse(text, { gfm: true, breaks: false })
+          editorRef.current?.chain().focus().insertContent(html).run()
+          return true
+        }
         return false
       },
     },
   })
+
+  editorRef.current = editor
 
   async function insertImage(file) {
     if (!editor || !file) return

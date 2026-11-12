@@ -99,7 +99,7 @@ export function Magnetic({ children, strength = 0.35, className }) {
 }
 
 /** Image that unveils from the bottom edge while settling from a slight zoom. Storytelling: content arrives as you reach it. */
-export function ImageReveal({ src, alt = '', eager = false, className, style, amount = 0.3 }) {
+export function ImageReveal({ src, alt = '', eager = false, className, style, amount = 0.3, fit = 'cover', position = 'center' }) {
   const reduce = useReducedMotion()
   return (
     <motion.div
@@ -118,7 +118,7 @@ export function ImageReveal({ src, alt = '', eager = false, className, style, am
         whileInView={{ scale: 1 }}
         viewport={{ once: true, amount }}
         transition={{ duration: 1.4, ease: EASE }}
-        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        style={{ width: '100%', height: '100%', objectFit: fit, objectPosition: position }}
       />
     </motion.div>
   )

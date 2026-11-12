@@ -211,7 +211,7 @@ function Hero({ get, set }) {
         </div>
       </div>
       <div className="form">
-        <Toggle checked={get('hero.showImage', true)} onChange={set('hero.showImage')} label="Show hero image" />
+        <Toggle checked={get('hero.showImage', false)} onChange={set('hero.showImage')} label="Show an image beside the headline" />
         <Field label="Hero image" hint="Portrait works best (4:5). A photo of you or your workspace.">
           <ImageField value={get('hero.imageUrl')} onChange={set('hero.imageUrl')} folder="hero" label="hero image" />
         </Field>
@@ -439,7 +439,7 @@ function ThemeTab({ get, set }) {
           <div style={{ display: 'grid', gap: 10 }}>
             <Toggle checked={get('theme.grain', true)} onChange={set('theme.grain')} label="Film grain overlay" />
             <Toggle checked={get('theme.smoothScroll', true)} onChange={set('theme.smoothScroll')} label="Smooth scrolling" />
-            <Toggle checked={get('theme.preloader', true)} onChange={set('theme.preloader')} label="Name intro on first visit" />
+            <Toggle checked={get('theme.preloader', true)} onChange={set('theme.preloader')} label="Curtain intro on first visit" />
           </div>
         </div>
         <div className="field">
